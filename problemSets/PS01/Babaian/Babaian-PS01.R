@@ -71,12 +71,14 @@ str(expenditure)
 
 #install.packages("GGally)
 library(GGally)
+library(ggplot2)
 ggpairs(expenditure,
         columns = 2:5,
         columnLabels=c("Housing assistance in state",
        "Personal income in state",
-       "Share of financially insecure in state",
-       "Share of urban population in state"))
+       "Financially insecure share",
+       "Urban population share"))
+ggsave("Babaian-plot1.pdf", width = 8,   height = 6)
 ## According to the visualized relationships between all meaningful quantities in the data,
 #the variables are positively related, but there are no strong correlations 
 # between any of them
@@ -87,31 +89,33 @@ ggpairs(expenditure,
 #transforming Region to a factor for meaningful visualization:
 expenditure$Region <- factor(expenditure$Region, labels = c("Northeast", "North Central", "South", "West"))
 
-library(ggplot2)
 ggplot(data=expenditure, mapping=aes(x=Region, y=Y)) + 
   stat_summary(fun.data=mean_sdl, geom="bar")  + 
   labs(title="Per capita expenditure on shelters/housing assistance in state by region",
-       x="", y="") 
+       x="", y="")
+ggsave("Babaian-plot2.pdf", width = 8,   height = 6)
 #The highest per capita expenditure on housing assistance is in the Western states.
 
 #plot the relationship between Y and X1:
+pdf("Babaian-plot3.pdf")
 plot(expenditure$X1, expenditure$Y,
      xlab="Per capita personal income in state",
      ylab="Housing assistance in state",
-     main="The Relationship between state-level personal income and housing assistance")
+     main="State-level personal income and housing assistance")
+dev.off()
 # There is a positive relationship between per capita personal income in state
 # and its housing assistance expenditures, however, there is no strong correlation
 # as there is a significant amount on deviations on both sides of the distributions
 
 #Reproduce the above graph including one more variable Region
 #and display different regions with different types of symbols and colors.
-
+pdf("Babaian-plot4.pdf")
 plot(expenditure$X1, expenditure$Y,
     col= expenditure$Region, 
     pch=c(21,22,23,24)[as.numeric(expenditure$Region)],
     xlab="Per capita personal income in state",
     ylab="Housing assistance in state",
-    main="The Relationship between state-level personal income and housing assistance by regions")
-
-legend("topleft", cex=0.5, legend=levels(expenditure$Region), pch=unique(expenditure$Region), col=unique(expenditure$Region))
-
+    main="State-level personal income and housing assistance by regions")
+legend("topleft", cex=1, legend=levels(expenditure$Region), 
+        pch=unique(expenditure$Region), col=unique(expenditure$Region))
+dev.off()
